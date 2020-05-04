@@ -6,6 +6,17 @@ Vue.config.productionTip = false
 
 Vue.use(VueResource);
 
+Vue.http.options.root = 'https://vue-learning-e1562.firebaseio.com/';
+Vue.http.interceptors.push((request, next) => {
+  console.log(request);
+  if (request.method == 'POST') {
+    request.method = 'PUT';
+  }
+  next(response => {
+    response.json = () => { return {messages: response.body} }
+  });
+});
+
 new Vue({
   render: h => h(App),
 }).$mount('#app')

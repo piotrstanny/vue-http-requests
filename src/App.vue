@@ -3,6 +3,7 @@
   <div class="container">
       <div class="row justify-content-center">
           <h1>A Form to connect with Firebase</h1>
+
         <div class="col-xs-12 col-md-6">
           <h2>Send data to database</h2>
           <form>
@@ -12,14 +13,18 @@
               <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
             </div>
             <div class="form-group">
-              <label for="nickname">Nickname</label>
+              <label for="nickname">Username</label>
               <input type="text" class="form-control" id="nickname" placeholder="Enter nickname" v-model="user.nickname">
             </div>
             <button class="btn btn-primary" @click.prevent="submit">Submit</button>
           </form>
         </div>
+
         <div class="col-xs-12 col-md-6">
           <h2>Get data from database</h2>
+          <label for="">Choose access node:</label>
+          <input class="form-control" type="text" v-model="node">
+          <br>
           <button class="btn btn-warning" @click="fetchData">Get Data</button>
           <div id="data-list">
             <ul class="list-group">
@@ -27,6 +32,7 @@
             </ul>
           </div>
         </div>
+
       </div>
   </div>
   </div>
@@ -42,31 +48,52 @@ export default {
         email: '',
         nickname: ''
       },
-      users: []
+      users: [],
+      resource: {},
+      node: 'data'
     }
   },
   methods: {
     submit() {
-      this.$http.post('https://vue-learning-e1562.firebaseio.com/data.json', this.user)
+      this.$http.post('', this.user)
         .then(response => {
           return console.log(response)
         }, error => {
           return console.log(error)
         });
-        this.user.email = '';
-        this.user.nickname = ''
+        this.resource.save({}, this.user);
+        this.resource.saveAlt(this.user)
     },
     fetchData() {
-      this.$http.get('https://vue-learning-e1562.firebaseio.com/data.json')
-        .then(response => response.json())
-        .then(data => {
-          var dataArray = [];
-          var key = '';
-          for (key in data) {
-            dataArray.push(data[key])
-          }
-          this.users = dataArray
-        })
+//                this.$http.get('data.json')
+//                        .then(response => {
+//                            return response.json();
+//                        })
+//                        .then(data => {
+//                            const resultArray = [];
+//                            for (let key in data) {
+//                                resultArray.push(data[key]);
+//                            }
+//                            this.users = resultArray;
+//                        });
+        this.resource.getData({node: this.node})
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    const resultArray = [];
+                    for (let key in data) {
+                        resultArray.push(data[key]);
+                    }
+                    this.users = resultArray;
+                })
+    },
+    created() {
+        const customActions = {
+            saveAlt: {method: 'POST', url: 'alternative.json'},
+            getData: {method: 'GET'}
+        };
+        this.resource = this.$resource('{node}.json', {}, customActions);
     }
   }
 }
