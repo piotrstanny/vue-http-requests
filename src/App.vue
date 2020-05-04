@@ -2,8 +2,9 @@
   <div id="app">
   <div class="container">
       <div class="row justify-content-center">
-        <div class="col-xs-12 col-md-6">
           <h1>A Form to connect with Firebase</h1>
+        <div class="col-xs-12 col-md-6">
+          <h2>Send data to database</h2>
           <form>
             <div class="form-group">
               <label for="exampleInputEmail1">Email address</label>
@@ -14,13 +15,10 @@
               <label for="nickname">Nickname</label>
               <input type="text" class="form-control" id="nickname" placeholder="Enter nickname" v-model="user.nickname">
             </div>
-            <div class="form-group form-check">
-              <input type="checkbox" class="form-check-input" id="exampleCheck1">
-              <label class="form-check-label" for="exampleCheck1">Check me out</label>
-            </div>
             <button type="submit" class="btn btn-primary" @click.prevent="submit">Submit</button>
           </form>
         </div>
+        
       </div>
   </div>
   </div>
@@ -40,7 +38,12 @@ export default {
   },
   methods: {
     submit() {
-      return console.log("Nickname is " + this.user.nickname + ", and email is " + this.user.email)
+      this.$http.post('https://vue-learning-e1562.firebaseio.com/data.json', this.user)
+        .then(response => {
+          return console.log(response)
+        }, error => {
+          return console.log(error)
+        })
     }
   }
 }
@@ -51,5 +54,8 @@ h1 {
   text-align: center;
   height: 200px;
   padding-top:40px;
+}
+h2 {
+  margin-bottom: 50px;
 }
 </style>
