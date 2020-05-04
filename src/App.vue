@@ -18,7 +18,13 @@
             <button type="submit" class="btn btn-primary" @click.prevent="submit">Submit</button>
           </form>
         </div>
-        
+        <div class="col-xs-12 col-md-6">
+          <h2>Get data from database</h2>
+          <button class="btn btn-warning" @click="fetchData">Get Data</button>
+          <ul class="list-group">
+            <li class="list group item" v-for="u in users" :key="u">{{u.nickname}} - {{u.email}}</li>
+          </ul>
+        </div>
       </div>
   </div>
   </div>
@@ -33,7 +39,8 @@ export default {
       user: {
         email: '',
         nickname: ''
-      }
+      },
+      users: []
     }
   },
   methods: {
