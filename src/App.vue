@@ -51,6 +51,11 @@ export default {
         }, error => {
           return console.log(error)
         })
+    },
+    fetchData() {
+      this.$http.get('https://vue-learning-e1562.firebaseio.com/data.json')
+        .then(response => response.json())
+        .then(data => console.log(data))
     }
   }
 }
