@@ -15,15 +15,17 @@
               <label for="nickname">Nickname</label>
               <input type="text" class="form-control" id="nickname" placeholder="Enter nickname" v-model="user.nickname">
             </div>
-            <button type="submit" class="btn btn-primary" @click.prevent="submit">Submit</button>
+            <button class="btn btn-primary" @click.prevent="submit">Submit</button>
           </form>
         </div>
         <div class="col-xs-12 col-md-6">
           <h2>Get data from database</h2>
           <button class="btn btn-warning" @click="fetchData">Get Data</button>
-          <ul class="list-group">
-            <li class="list group item" v-for="u in users" :key="u">{{u.nickname}} - {{u.email}}</li>
-          </ul>
+          <div id="data-list">
+            <ul class="list-group">
+              <li class="list-group-item" v-for="u in users" :key="u">{{u.nickname}} - {{u.email}}</li>
+            </ul>
+          </div>
         </div>
       </div>
   </div>
@@ -50,12 +52,21 @@ export default {
           return console.log(response)
         }, error => {
           return console.log(error)
-        })
+        });
+        this.user.email = '';
+        this.user.nickname = ''
     },
     fetchData() {
       this.$http.get('https://vue-learning-e1562.firebaseio.com/data.json')
         .then(response => response.json())
-        .then(data => console.log(data))
+        .then(data => {
+          var dataArray = [];
+          var key = '';
+          for (key in data) {
+            dataArray.push(data[key])
+          }
+          this.users = dataArray
+        })
     }
   }
 }
@@ -69,5 +80,8 @@ h1 {
 }
 h2 {
   margin-bottom: 50px;
+}
+#data-list {
+  margin-top: 30px;
 }
 </style>
